@@ -12,9 +12,18 @@ namespace ExcelReader
 			FileInfo existingFile = new FileInfo(@"C:\Users\Tyler\source\repos\ExcelReader\TestWorkbook.xlsx");
 			using (ExcelPackage package = new ExcelPackage(existingFile))
 			{
-				//Get the first worksheet in the workbook
-				ExcelWorksheet worksheet = package.Workbook.Worksheets[0];
-				Console.WriteLine("\tCell({0},{1}).Value={2}", 1, 1, worksheet.Cells[1, 1].Value);
+				int NumberOfWorksheets = package.Workbook.Worksheets.Count;
+				for(int i = 0; i < NumberOfWorksheets; i++)
+                {
+					ExcelWorksheet worksheet = package.Workbook.Worksheets[i];
+					int workSheetColumns = worksheet.Dimension.Columns;
+					int workSheetRows = worksheet.Dimension.Rows;
+					string workSheetName = worksheet.Name;
+					Console.WriteLine("\tCell({0},{1}).Value={2}", 1, 1, worksheet.Cells[1, 1].Value);
+                    Console.WriteLine($"{workSheetColumns} : {workSheetRows}");
+                    Console.WriteLine(workSheetName);
+				}
+
 
 
 			} // the using statement automatically calls Dispose() which closes the package.
