@@ -70,7 +70,7 @@ namespace ExcelReader
         }
         public static SqlConnection OpenSql()
         {
-            string connectionString = ConfigurationManager.AppSettings.Get("ConnectionString") + $"Initial Catalog={ConfigurationManager.AppSettings.Get("DatabaseName")}";
+            string connectionString = ConfigurationManager.AppSettings.Get("ConnectionString") + $"Initial Catalog='{ConfigurationManager.AppSettings.Get("DatabaseName")}'";
             var connection = new SqlConnection(connectionString);
             connection.Open();
             return connection;

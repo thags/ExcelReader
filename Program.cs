@@ -11,7 +11,8 @@ namespace ExcelReader
     {
         static void Main(string[] args)
         {
-            DBManager.StartUpDatabaseOperations(ConfigurationManager.AppSettings.Get("DatabaseName"));
+            //DBManager.StartUpDatabaseOperations(ConfigurationManager.AppSettings.Get("DatabaseName"));
+            ExcelController.Run();
         }
     }
 }
