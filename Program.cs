@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Configuration;
 
 namespace ExcelReader
 {
@@ -10,12 +11,7 @@ namespace ExcelReader
     {
         static void Main(string[] args)
         {
-            if (!DBManager.DatabaseExists("ExcelReader"))
-            {
-                Console.WriteLine("Database does not exist");
-                DBManager.CreateDatabase();
-            }
-            else { Console.WriteLine("Database already exists"); }
+            DBManager.StartUpDatabaseOperations(ConfigurationManager.AppSettings.Get("DatabaseName"));
         }
     }
 }
