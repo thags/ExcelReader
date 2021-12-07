@@ -10,6 +10,12 @@ namespace ExcelReader
     {
         static void Main(string[] args)
         {
+            if (!DBManager.DatabaseExists("ExcelReader"))
+            {
+                Console.WriteLine("Database does not exist");
+                DBManager.CreateDatabase();
+            }
+            else { Console.WriteLine("Database already exists"); }
         }
     }
 }
