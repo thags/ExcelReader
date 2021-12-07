@@ -9,8 +9,7 @@ namespace ExcelReader
     {
 		public static void Run()
 		{
-
-			FileInfo existingFile = new FileInfo("D:\\Downloads\\time_week01.xlsx");
+			FileInfo existingFile = new FileInfo(@"C:\Users\Tyler\source\repos\ExcelReader\TestWorkbook.xlsx");
 			using (ExcelPackage package = new ExcelPackage(existingFile))
 			{
 				//Get the first worksheet in the workbook
