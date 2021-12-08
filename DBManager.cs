@@ -89,6 +89,23 @@ namespace ExcelReader
 
             return isExist;
         }
+        public static bool DoesTableExist(string tableName)
+        {
+            bool isExist = false;
+            SqlConnection con = OpenSql();
+            string command = $@"SELECT *
+                                FROM INFORMATION_SCHEMA.TABLES
+                                WHERE TABLE_NAME = N'{tableName}'";
+            using (SqlCommand cmd = new SqlCommand(command, con))
+            {
+                using (SqlDataReader reader = cmd.ExecuteReader())
+                {
+                    isExist = reader.HasRows;
+                }
+            }
+            con.Close();
+            return isExist;
+        }
         public static SqlConnection OpenSql()
         {
             string connectionString = ConfigurationManager.AppSettings.Get("ConnectionString") + $"Initial Catalog={ConfigurationManager.AppSettings.Get("DatabaseName")}";

@@ -11,9 +11,9 @@ namespace ExcelReader
     {
         static void Main(string[] args)
         {
-            DBManager.StartUpDatabaseOperations(ConfigurationManager.AppSettings.Get("DatabaseName"));
-            var allColumns = ExcelController.Run();
-            Console.WriteLine(allColumns[0].ColumnData[0]);
+            //DBManager.StartUpDatabaseOperations(ConfigurationManager.AppSettings.Get("DatabaseName"));
+            //var allColumns = ExcelController.Run();
+            Console.WriteLine(DBManager.DoesTableExist("Sheet1"));
         }
     }
 }
