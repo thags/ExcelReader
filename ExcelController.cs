@@ -2,13 +2,17 @@
 using System.Configuration;
 using System.IO;
 using OfficeOpenXml;
+using ExcelReader.Models;
+using System.Collections.Generic;
 
 namespace ExcelReader
 {
     class ExcelController
     {
-		public static void Run()
+		public static List<Column> Run()
 		{
+			//create an empty list of columns which will be added to and returned
+			List<Column> allColumns = new List<Column>();
 			FileInfo existingFile = new FileInfo(@"C:\Users\Tyler\source\repos\ExcelReader\TestWorkbook.xlsx");
 			using (ExcelPackage package = new ExcelPackage(existingFile))
 			{
@@ -25,21 +29,42 @@ namespace ExcelReader
 					int workSheetRows = worksheet.Dimension.Rows;
 
 					//iterate through each column of the file
-					for(int currentColumn = 0; currentColumn <= workSheetColumns; currentColumn++)
+					for(int currentColumn = 1; currentColumn <= workSheetColumns; currentColumn++)
                     {
-						string indexToLetter = NumberToAlpha(currentColumn);
-						DBManager.AddColumn(workSheetName, indexToLetter);
-                    }
-					Console.WriteLine("\tCell({0},{1}).Value={2}", 1, 1, worksheet.Cells[1, 1].Value);
-                    Console.WriteLine($"{workSheetColumns} : {workSheetRows}");
-                    Console.WriteLine(workSheetName);
+						string colIndexToLetter = NumberToAlpha(currentColumn);
+						List<string> entireColumnData = GetAllDataOfRow(workSheetRows, currentColumn, worksheet);
+						
+						//create a new column model to later send to DBmanager to create the column
+						Column newColumn = new Column
+						{
+							TableName = workSheetName,
+							ColumnName = colIndexToLetter,
+							ColumnData = entireColumnData,
+						};
+						allColumns.Add(newColumn);
+						
+					}
 				}
 			} // the using statement automatically calls Dispose() which closes the package.
 			Console.WriteLine("\n Read workbook complete");
+			return allColumns;
+		}
+
+		public static List<string> GetAllDataOfRow(int workSheetRows, int currentColumn, ExcelWorksheet worksheet)
+        {
+			List<string> entireColumnData = new List<string>(workSheetRows);
+			//iterate through all the rows to get row data
+			for (int currentRow = 1; currentRow <= workSheetRows; currentRow++)
+			{
+				string currentValue = (string)worksheet.Cells[currentRow, currentColumn].Value;
+				entireColumnData.Add(currentValue);
+			}
+			return entireColumnData;
 		}
 
 		public static string NumberToAlpha(long number, bool isLower = false)
 		{
+			number--;
 			string returnVal = "";
 			char c = isLower ? 'a' : 'A';
 			while (number >= 0)
