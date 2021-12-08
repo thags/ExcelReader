@@ -79,6 +79,7 @@
   <ItemGroup>
     <Compile Include="ExcelController.cs" />
     <Compile Include="DBManager.cs" />
+    <Compile Include="Models\Column.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
