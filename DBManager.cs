@@ -52,7 +52,8 @@ namespace ExcelReader
         public static void AddTable(string tableName)
         {
             SqlConnection con = OpenSql();
-            string command = $"CREATE TABLE [dbo].[{tableName}]([Id][int] IDENTITY(1, 1) NOT NULL)";
+            string command = $@"CREATE TABLE [dbo].[{tableName}](
+                                [Id][int] IDENTITY(1, 1) NOT NULL)";
 
             SqlCommand myCommand = new SqlCommand(command, con);
             myCommand.ExecuteNonQuery();
@@ -67,9 +68,27 @@ namespace ExcelReader
             myCommand.ExecuteNonQuery();
             con.Close();
         }
+        public static void UpdateColumns(string tableName, string columnName, string data, int index)
+        {
+            SqlConnection con = OpenSql();
+
+            string command = $@"UPDATE {tableName}
+                             SET {columnName} = '{data}'
+                             WHERE Id = {index}";
+
+            SqlCommand myCommand = new SqlCommand(command, con);
+            myCommand.ExecuteNonQuery();
+            con.Close();
+        }
         public static void InsertToColumn(string tableName, string columnName, string data)
         {
+            SqlConnection con = OpenSql();
 
+            string command = $"INSERT INTO {tableName}({columnName}) VALUES ('{data}')";
+
+            SqlCommand myCommand = new SqlCommand(command, con);
+            myCommand.ExecuteNonQuery();
+            con.Close();
         }
         public static bool DoesDatabaseExist(string DatabaseName)
         {

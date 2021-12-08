@@ -7,14 +7,49 @@ using System.Threading.Tasks;
 
 namespace ExcelReader
 {
-    class FlowControl
+    public class FlowControl
     {
-        public void WriteAllExcelToDB()
+        public static void WriteColumnsToDB(List<Column> allColumns)
         {
-            var allColumns = ExcelController.Run();
+            string lastTableName = "";
+            int iterations = 0;
             foreach (Column column in allColumns)
             {
+                string thisTableName = column.TableName;
+                string thisColumnName = column.ColumnName;
 
+                //See if this current iteration is part of a different table(workbook)
+                if (lastTableName != thisTableName)
+                {
+                    //Check if the table exists or not, create it if it does not
+                    if (!DBManager.DoesTableExist(thisTableName))
+                    {
+                        DBManager.AddTable(thisTableName);
+                    }
+                }
+
+                //check if the column already exists or not
+                if (!DBManager.DoesColumnExist(thisTableName, thisColumnName))
+                {
+                    DBManager.AddColumn(thisTableName, thisColumnName);
+                }
+
+                int index = 1;
+                foreach (string data in column.ColumnData)
+                {
+                    if (iterations == 0)
+                    {
+                        DBManager.InsertToColumn(thisTableName, thisColumnName, data);
+                    }
+                    else
+                    {
+                        //update the columns instead of inserting
+                        DBManager.UpdateColumns(thisTableName, thisColumnName, data, index);
+                    }
+                    index++;
+                }
+
+                iterations++;
             }
         }
     }
