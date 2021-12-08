@@ -52,7 +52,9 @@ namespace ExcelReader
         public static void AddTable(string tableName)
         {
             SqlConnection con = OpenSql();
-            string command = $"CREATE TABLE [dbo].[{tableName}]([Id][int] IDENTITY(1, 1) NOT NULL)";
+            string command = $@"CREATE TABLE [dbo].[{tableName}](
+                                [Id][int] IDENTITY(1, 1) NOT NULL,
+                                [Data][NVARCHAR](max) NOT NULL )";
 
             SqlCommand myCommand = new SqlCommand(command, con);
             myCommand.ExecuteNonQuery();
