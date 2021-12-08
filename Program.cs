@@ -12,7 +12,8 @@ namespace ExcelReader
         static void Main(string[] args)
         {
             DBManager.StartUpDatabaseOperations(ConfigurationManager.AppSettings.Get("DatabaseName"));
-            ExcelController.Run();
+            var allColumns = ExcelController.Run();
+            Console.WriteLine(allColumns[0].ColumnData[0]);
         }
     }
 }

@@ -9,8 +9,10 @@ namespace ExcelReader
 {
     class ExcelController
     {
-		public static void Run()
+		public static List<Column> Run()
 		{
+			//create an empty list of columns which will be added to and returned
+			List<Column> allColumns = new List<Column>();
 			FileInfo existingFile = new FileInfo(@"C:\Users\Tyler\source\repos\ExcelReader\TestWorkbook.xlsx");
 			using (ExcelPackage package = new ExcelPackage(existingFile))
 			{
@@ -39,11 +41,13 @@ namespace ExcelReader
 							ColumnName = colIndexToLetter,
 							ColumnData = entireColumnData,
 						};
-						Console.WriteLine($"Reading Row {currentColumn} into the Database");
+						allColumns.Add(newColumn);
+						
 					}
 				}
 			} // the using statement automatically calls Dispose() which closes the package.
 			Console.WriteLine("\n Read workbook complete");
+			return allColumns;
 		}
 
 		public static List<string> GetAllDataOfRow(int workSheetRows, int currentColumn, ExcelWorksheet worksheet)
