@@ -13,7 +13,7 @@ namespace ExcelReader
         {
             //DBManager.StartUpDatabaseOperations(ConfigurationManager.AppSettings.Get("DatabaseName"));
             //var allColumns = ExcelController.Run();
-            Console.WriteLine(DBManager.DoesTableExist("Sheet1"));
+            Console.WriteLine(DBManager.DoesColumnExist("Sheet1", "test"));
         }
     }
 }
