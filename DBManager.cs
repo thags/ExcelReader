@@ -49,7 +49,28 @@ namespace ExcelReader
             dropDBCommand.ExecuteNonQuery();
             con.Close();
         }
+        public static void AddTable(string tableName)
+        {
+            SqlConnection con = OpenSql();
+            string command = $"CREATE TABLE [dbo].[{tableName}]([Id][int] IDENTITY(1, 1) NOT NULL)";
 
+            SqlCommand myCommand = new SqlCommand(command, con);
+            myCommand.ExecuteNonQuery();
+            con.Close();
+        }
+        public static void AddColumn(string tableName, string columnName)
+        {
+            SqlConnection con = OpenSql();
+            string command = $"ALTER TABLE [dbo].[{tableName}] ADD {columnName} VARCHAR(255)";
+
+            SqlCommand myCommand = new SqlCommand(command, con);
+            myCommand.ExecuteNonQuery();
+            con.Close();
+        }
+        public static void InsertToColumn(string tableName, string columnName, string data)
+        {
+
+        }
         public static bool DoesDatabaseExist(string DatabaseName)
         {
             string cmdText = $"SELECT * FROM master.dbo.sysdatabases WHERE name = '{DatabaseName}'";
@@ -70,7 +91,7 @@ namespace ExcelReader
         }
         public static SqlConnection OpenSql()
         {
-            string connectionString = ConfigurationManager.AppSettings.Get("ConnectionString") + $"Initial Catalog='{ConfigurationManager.AppSettings.Get("DatabaseName")}'";
+            string connectionString = ConfigurationManager.AppSettings.Get("ConnectionString") + $"Initial Catalog={ConfigurationManager.AppSettings.Get("DatabaseName")}";
             var connection = new SqlConnection(connectionString);
             connection.Open();
             return connection;
