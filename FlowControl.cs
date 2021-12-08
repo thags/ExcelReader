@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 
 namespace ExcelReader
 {
-    class FlowControl
+    public class FlowControl
     {
-        public void WriteAllExcelToDB()
+        public static void WriteColumnsToDB(List<Column> allColumns)
         {
             string lastTableName = "";
-            var allColumns = ExcelController.Run();
+            int iterations = 0;
             foreach (Column column in allColumns)
             {
                 string thisTableName = column.TableName;
@@ -34,9 +34,22 @@ namespace ExcelReader
                     DBManager.AddColumn(thisTableName, thisColumnName);
                 }
 
+                int index = 1;
+                foreach (string data in column.ColumnData)
+                {
+                    if (iterations == 0)
+                    {
+                        DBManager.InsertToColumn(thisTableName, thisColumnName, data);
+                    }
+                    else
+                    {
+                        //update the columns instead of inserting
+                        DBManager.UpdateColumns(thisTableName, thisColumnName, data, index);
+                    }
+                    index++;
+                }
 
-
-
+                iterations++;
             }
         }
     }

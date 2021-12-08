@@ -12,9 +12,7 @@ namespace ExcelReader
         static void Main(string[] args)
         {
             DBManager.StartUpDatabaseOperations(ConfigurationManager.AppSettings.Get("DatabaseName"));
-            //var allColumns = ExcelController.Run();
-            DBManager.AddTable("Test");
-            Console.WriteLine(DBManager.DoesColumnExist("Sheet1", "test"));
+            FlowControl.WriteColumnsToDB(ExcelController.Run());
         }
     }
 }
