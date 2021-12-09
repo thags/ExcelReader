@@ -9,47 +9,25 @@ namespace ExcelReader
 {
     class ExcelController
     {
-		public static List<Column> Run()
+		public static List<Column> GetAllData()
 		{
-			//create an empty list of columns which will be added to and returned
-			List<Column> allColumns = new List<Column>();
+			List<Column> allColumnsData = new List<Column>();
 			string filePath = ConfigurationManager.AppSettings.Get("FilePath");
 			FileInfo existingFile = new FileInfo(filePath);
+
 			using (ExcelPackage package = new ExcelPackage(existingFile))
 			{
 				int NumberOfWorksheets = package.Workbook.Worksheets.Count;
-				//iterate through each workbook of the file
 				for(int currentWorksheet = 0; currentWorksheet < NumberOfWorksheets; currentWorksheet++)
                 {
 					ExcelWorksheet worksheet = package.Workbook.Worksheets[currentWorksheet];
-					string workSheetName = worksheet.Name;
-
-					//get the dimensions of the table
-					int workSheetColumns = worksheet.Dimension.Columns;
-					int workSheetRows = worksheet.Dimension.Rows;
-
-					//iterate through each column of the file
-					for(int currentColumn = 1; currentColumn <= workSheetColumns; currentColumn++)
-                    {
-						string colIndexToLetter = NumberToAlpha(currentColumn);
-						List<string> entireColumnData = GetAllDataOfRow(workSheetRows, currentColumn, worksheet);
-						
-						//create a new column model to later send to DBmanager to create the column
-						Column newColumn = new Column
-						{
-							TableName = workSheetName,
-							ColumnName = colIndexToLetter,
-							ColumnData = entireColumnData,
-						};
-						allColumns.Add(newColumn);
-						
-					}
+					allColumnsData.AddRange(GetAllColumnDataForWorkSheet(worksheet));
 				}
-			} // the using statement automatically calls Dispose() which closes the package.
-			return allColumns;
+			} 
+			return allColumnsData;
 		}
 
-		public static List<string> GetAllDataOfRow(int workSheetRows, int currentColumn, ExcelWorksheet worksheet)
+		private static List<string> GetAllDataOfRow(int workSheetRows, int currentColumn, ExcelWorksheet worksheet)
         {
 			List<string> entireColumnData = new List<string>(workSheetRows);
 			//iterate through all the rows to get row data
@@ -74,6 +52,29 @@ namespace ExcelReader
 			}
 
 			return returnVal;
+		}
+
+		private static List<Column> GetAllColumnDataForWorkSheet(ExcelWorksheet worksheet)
+        {
+			List<Column> allColumns = new List<Column>();
+			string workSheetName = worksheet.Name;
+			int workSheetColumns = worksheet.Dimension.Columns;
+			int workSheetRows = worksheet.Dimension.Rows;
+
+			for (int currentColumn = 1; currentColumn <= workSheetColumns; currentColumn++)
+			{
+				string colIndexToLetter = NumberToAlpha(currentColumn);
+				List<string> entireColumnData = GetAllDataOfRow(workSheetRows, currentColumn, worksheet);
+
+				Column newColumn = new Column
+				{
+					TableName = workSheetName,
+					ColumnName = colIndexToLetter,
+					ColumnData = entireColumnData,
+				};
+				allColumns.Add(newColumn);
+			}
+			return allColumns;
 		}
 	}
 }

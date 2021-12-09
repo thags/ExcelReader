@@ -13,7 +13,7 @@ namespace ExcelReader
         static void Main(string[] args)
         {
             DBManager.StartUpDatabaseOperations(ConfigurationManager.AppSettings.Get("DatabaseName"));
-            FlowControl.WriteColumnsToDB(ExcelController.Run());
+            FlowControl.WriteColumnsToDB(ExcelController.GetAllData());
             TableVisualisationEngine.ViewAllTablesFromDB(DBManager.GetAllTablesFromDB());
             FlowControl.WaitForUser();
 
