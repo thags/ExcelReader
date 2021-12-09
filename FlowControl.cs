@@ -25,6 +25,7 @@ namespace ExcelReader
                     if (!DBManager.DoesTableExist(thisTableName))
                     {
                         DBManager.AddTable(thisTableName);
+                        Console.WriteLine($"Adding Database table {thisTableName}");
                     }
                 }
 
@@ -32,9 +33,11 @@ namespace ExcelReader
                 if (!DBManager.DoesColumnExist(thisTableName, thisColumnName))
                 {
                     DBManager.AddColumn(thisTableName, thisColumnName);
+                    Console.WriteLine($"\nAdding column {thisColumnName} to table {thisTableName}");
                 }
 
                 int index = 1;
+                Console.WriteLine($"Inserting data into column: {thisColumnName} in table {thisTableName}");
                 foreach (string data in column.ColumnData)
                 {
                     if (iterations == 0)
@@ -48,9 +51,15 @@ namespace ExcelReader
                     }
                     index++;
                 }
+                Console.WriteLine($"Data insertion complete for {thisColumnName}");
 
                 iterations++;
             }
+        }
+        public static void WaitForUser()
+        {
+            Console.WriteLine("\nPress any key to continue");
+            Console.ReadLine();
         }
     }
 }

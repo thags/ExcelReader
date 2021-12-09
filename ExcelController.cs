@@ -13,7 +13,8 @@ namespace ExcelReader
 		{
 			//create an empty list of columns which will be added to and returned
 			List<Column> allColumns = new List<Column>();
-			FileInfo existingFile = new FileInfo(@"C:\Users\Tyler\source\repos\ExcelReader\TestWorkbook.xlsx");
+			string filePath = ConfigurationManager.AppSettings.Get("FilePath");
+			FileInfo existingFile = new FileInfo(filePath);
 			using (ExcelPackage package = new ExcelPackage(existingFile))
 			{
 				int NumberOfWorksheets = package.Workbook.Worksheets.Count;
@@ -46,7 +47,6 @@ namespace ExcelReader
 					}
 				}
 			} // the using statement automatically calls Dispose() which closes the package.
-			Console.WriteLine("\n Read workbook complete");
 			return allColumns;
 		}
 

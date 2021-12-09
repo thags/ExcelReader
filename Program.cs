@@ -13,6 +13,8 @@ namespace ExcelReader
         {
             DBManager.StartUpDatabaseOperations(ConfigurationManager.AppSettings.Get("DatabaseName"));
             FlowControl.WriteColumnsToDB(ExcelController.Run());
+            FlowControl.WaitForUser();
+
         }
     }
 }
