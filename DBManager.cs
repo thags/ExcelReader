@@ -147,11 +147,11 @@ namespace ExcelReader
             con.Close();
             return isExist;
         }
-        public static List<RowView> ReadAllRowsFromTable(string tableName)
+        public static List<List<object>> ReadAllRowsFromTable(string tableName)
         {
-            List<RowView> allColumnsData = new List<RowView>();
+            List<List<object>> allColumnsData = new List<List<object>>();
             int iteration = 0;
-            //List<Object[]> allColumnValues = new List<object[]>();
+
             string command = $"SELECT * FROM {tableName}";
 
             SqlConnection con = OpenSql();
@@ -161,30 +161,42 @@ namespace ExcelReader
             while (dataReader.Read())
             {
                 int numberOfFields = dataReader.FieldCount;
-                //Object[] columnValues = new Object[numberOfFields];
-                //dataReader.GetValues(columnValues);
-                //allColumnValues.Add(columnValues);
 
-                List<string> currentColumnData = new List<string>(numberOfFields);
+                List<object> currentColumnData = new List<object>(numberOfFields);
                 for(int i = 0; i < numberOfFields; i++)
                 {
                     currentColumnData.Add(dataReader[i].ToString());
                 }
-                string columnName = "";
-                if (iteration > 0)
-                {
-                    columnName = ExcelController.NumberToAlpha(Int32.Parse(currentColumnData[0])-1);
-                }
-                RowView currentColumn = new RowView
-                {
-                    ColumnName = columnName,
-                    RowData = currentColumnData,
-                };
-                allColumnsData.Add(currentColumn);
-
+                allColumnsData.Add(currentColumnData);
+                iteration++;
             }
             con.Close();
+            
             return allColumnsData;
+        }
+        public static List<string> GetAllColumnHeadingsFromTable(string tableName)
+        {
+            List<string> allHeadings = new List<string>();
+            string command = $@"SELECT COLUMN_NAME
+                               FROM INFORMATION_SCHEMA.COLUMNS
+                                WHERE TABLE_NAME = N'{tableName}'";
+
+            SqlConnection con = OpenSql();
+            SqlCommand myCommand = new SqlCommand(command, con);
+            SqlDataReader dataReader = myCommand.ExecuteReader();
+
+            while (dataReader.Read())
+            {
+                string currentHeading = dataReader[0].ToString();
+                if(currentHeading == "Id")
+                {
+                    currentHeading = "";
+                }
+                allHeadings.Add(currentHeading);
+            }
+            con.Close();
+
+            return allHeadings;
         }
         public static SqlConnection OpenSql()
         {

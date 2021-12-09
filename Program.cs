@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Configuration;
+using ExcelReader.Models;
 
 namespace ExcelReader
 {
@@ -13,11 +14,10 @@ namespace ExcelReader
         {
             DBManager.StartUpDatabaseOperations(ConfigurationManager.AppSettings.Get("DatabaseName"));
             List<string> allTables = FlowControl.WriteColumnsToDB(ExcelController.Run());
-            foreach(string tableName in allTables)
-            {
-                var rowValues = DBManager.ReadAllRowsFromTable(tableName);
-                
-            }
+            List<RowView> rowValues = new List<RowView>();
+            var headings = (DBManager.GetAllColumnHeadingsFromTable("Sheet1"));
+            TableVisualisationEngine.ViewTable(headings, DBManager.ReadAllRowsFromTable("Sheet1"));
+
             FlowControl.WaitForUser();
 
         }
