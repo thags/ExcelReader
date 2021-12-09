@@ -55,7 +55,7 @@ namespace ExcelReader
 			//iterate through all the rows to get row data
 			for (int currentRow = 1; currentRow <= workSheetRows; currentRow++)
 			{
-				string currentValue = (string)worksheet.Cells[currentRow, currentColumn].Value;
+				string currentValue = (string)worksheet.Cells[currentRow, currentColumn].Text;
 				entireColumnData.Add(currentValue);
 			}
 			return entireColumnData;
