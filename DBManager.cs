@@ -198,6 +198,29 @@ namespace ExcelReader
 
             return allHeadings;
         }
+        public static List<string> GetAllTablesFromDB()
+        {
+            List<string> allTables = new List<string>();
+            string command = $@"SELECT TABLE_NAME
+                               FROM INFORMATION_SCHEMA.TABLES";
+
+            SqlConnection con = OpenSql();
+            SqlCommand myCommand = new SqlCommand(command, con);
+            SqlDataReader dataReader = myCommand.ExecuteReader();
+
+            while (dataReader.Read())
+            {
+                string currentHeading = dataReader[0].ToString();
+                if (currentHeading == "Id")
+                {
+                    currentHeading = "";
+                }
+                allTables.Add(currentHeading);
+            }
+            con.Close();
+
+            return allTables;
+        }
         public static SqlConnection OpenSql()
         {
             string connectionString = ConfigurationManager.AppSettings.Get("ConnectionString") + $"Initial Catalog={ConfigurationManager.AppSettings.Get("DatabaseName")}";
