@@ -13,10 +13,9 @@ namespace ExcelReader
         static void Main(string[] args)
         {
             DBManager.StartUpDatabaseOperations(ConfigurationManager.AppSettings.Get("DatabaseName"));
-            List<string> allTables = FlowControl.WriteColumnsToDB(ExcelController.Run());
-            List<RowView> rowValues = new List<RowView>();
+            FlowControl.WriteColumnsToDB(ExcelController.Run());
             var headings = (DBManager.GetAllColumnHeadingsFromTable("Sheet1"));
-            TableVisualisationEngine.ViewTable(headings, DBManager.ReadAllRowsFromTable("Sheet1"));
+            TableVisualisationEngine.ViewTable(headings, DBManager.ReadAllRowsFromTable("Sheet1"), "Sheet1");
 
             FlowControl.WaitForUser();
 

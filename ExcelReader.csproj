@@ -83,8 +83,6 @@
     <Compile Include="ExcelController.cs" />
     <Compile Include="DBManager.cs" />
     <Compile Include="FlowControl.cs" />
-    <Compile Include="Models\RowViewDTO.cs" />
-    <Compile Include="Models\RowView.cs" />
     <Compile Include="Models\Column.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

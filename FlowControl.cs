@@ -9,56 +9,59 @@ namespace ExcelReader
 {
     public class FlowControl
     {
-        public static List<string> WriteColumnsToDB(List<Column> allColumns)
+        public static void WriteColumnsToDB(List<Column> allColumns)
         {
-            List<string> allTables = new List<string>();
-            string lastTableName = "";
             int iterations = 0;
             foreach (Column column in allColumns)
             {
                 string thisTableName = column.TableName;
                 string thisColumnName = column.ColumnName;
 
-                //See if this current iteration is part of a different table(workbook)
-                if (lastTableName != thisTableName)
-                {
-                    //Check if the table exists or not, create it if it does not
-                    if (!DBManager.DoesTableExist(thisTableName))
-                    {
-                        DBManager.AddTable(thisTableName);
-                        allTables.Add(thisTableName);
-                        Console.WriteLine($"Adding Database table {thisTableName}");
-                    }
-                }
-                lastTableName = thisTableName;
-
-                //check if the column already exists or not
-                if (!DBManager.DoesColumnExist(thisTableName, thisColumnName))
-                {
-                    DBManager.AddColumn(thisTableName, thisColumnName);
-                    Console.WriteLine($"\nAdding column {thisColumnName} to table {thisTableName}");
-                }
-
-                int index = 1;
-                Console.WriteLine($"Inserting data into column: {thisColumnName} in table {thisTableName}");
-                foreach (string data in column.ColumnData)
-                {
-                    if (iterations == 0)
-                    {
-                        DBManager.InsertToColumn(thisTableName, thisColumnName, data);
-                    }
-                    else
-                    {
-                        //update the columns instead of inserting
-                        DBManager.UpdateColumns(thisTableName, thisColumnName, data, index);
-                    }
-                    index++;
-                }
-                Console.WriteLine($"Data insertion complete for {thisColumnName}");
+                AddTableToDBIfNonExist(thisTableName);
+                AddColumnToDBTableIfNonExist(thisTableName, thisColumnName);
+                AddColumnDataToDB(column, iterations, thisTableName);
 
                 iterations++;
             }
-            return allTables;
+        }
+
+        private static void AddColumnDataToDB(Column column, int iterations, string tableName)
+        {
+            Console.WriteLine($"Inserting data into column: {column.ColumnName} in table {tableName}");
+            int index = 1;
+            foreach (string data in column.ColumnData)
+            {
+                if (iterations == 0)
+                {
+                    DBManager.InsertToColumn(tableName, column.ColumnName, data);
+                }
+                else
+                {
+                    //update the columns instead of inserting
+                    DBManager.UpdateColumns(tableName, column.ColumnName, data, index);
+                }
+                index++;
+            }
+            Console.WriteLine($"Data insertion complete for {column.ColumnName}");
+        }
+        private static void AddTableToDBIfNonExist(string tableName)
+        {
+            //Check if the table exists or not, create it if it does not
+            if (!DBManager.DoesTableExist(tableName))
+            {
+                DBManager.AddTable(tableName);
+                Console.WriteLine($"Adding Database table {tableName}");
+            }
+        }
+
+        private static void AddColumnToDBTableIfNonExist(string tableName, string columnName)
+        {
+            //check if the column already exists or not
+            if (!DBManager.DoesColumnExist(tableName, columnName))
+            {
+                DBManager.AddColumn(tableName, columnName);
+                Console.WriteLine($"\nAdding column {columnName} to table {tableName}");
+            }
         }
         public static void WaitForUser()
         {
