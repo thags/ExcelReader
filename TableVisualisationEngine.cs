@@ -43,6 +43,7 @@ namespace ExcelReader
                     .WithFormat(ConsoleTableBuilderFormat.Alternative)
                     .ExportAndWriteLine(TableAligntment.Left);
                 }
+                Console.Write("\n");
                 
             }
         }
