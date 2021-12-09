@@ -9,15 +9,22 @@ namespace ExcelReader
         public static void WriteColumnsToDB(List<Column> allColumns)
         {
             int iterations = 0;
+            string lastTableName = "";
             foreach (Column column in allColumns)
             {
                 string thisTableName = column.TableName;
                 string thisColumnName = column.ColumnName;
 
+                if(lastTableName != thisTableName)
+                {
+                    iterations = 0;
+                }
+
                 AddTableToDBIfNonExist(thisTableName);
                 AddColumnToDBTableIfNonExist(thisTableName, thisColumnName);
                 AddColumnDataToDB(column, iterations, thisTableName);
 
+                lastTableName = thisTableName;
                 iterations++;
             }
         }
