@@ -2,7 +2,6 @@
 using System.Data.SqlClient;
 using System.Configuration;
 using System.Collections.Generic;
-using ExcelReader.Models;
 
 namespace ExcelReader
 {
