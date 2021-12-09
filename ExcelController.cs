@@ -18,15 +18,38 @@ namespace ExcelReader
 			using (ExcelPackage package = new ExcelPackage(existingFile))
 			{
 				int NumberOfWorksheets = package.Workbook.Worksheets.Count;
+
 				for(int currentWorksheet = 0; currentWorksheet < NumberOfWorksheets; currentWorksheet++)
                 {
 					ExcelWorksheet worksheet = package.Workbook.Worksheets[currentWorksheet];
-					allColumnsData.AddRange(GetAllColumnDataForWorkSheet(worksheet));
+					allColumnsData.AddRange(GetAllDataForWorkSheet(worksheet));
 				}
 			} 
 			return allColumnsData;
 		}
 
+		private static List<Column> GetAllDataForWorkSheet(ExcelWorksheet worksheet)
+        {
+			List<Column> allColumns = new List<Column>();
+			string workSheetName = worksheet.Name;
+			int workSheetColumns = worksheet.Dimension.Columns;
+			int workSheetRows = worksheet.Dimension.Rows;
+
+			for (int currentColumn = 1; currentColumn <= workSheetColumns; currentColumn++)
+			{
+				string colIndexToLetter = NumberToAlpha(currentColumn);
+				List<string> entireColumnData = GetAllDataOfRow(workSheetRows, currentColumn, worksheet);
+				Column newColumn = new Column
+				{
+					TableName = workSheetName,
+					ColumnName = colIndexToLetter,
+					ColumnData = entireColumnData,
+				};
+				allColumns.Add(newColumn);
+
+			}
+			return allColumns;
+		}
 		private static List<string> GetAllDataOfRow(int workSheetRows, int currentColumn, ExcelWorksheet worksheet)
         {
 			List<string> entireColumnData = new List<string>(workSheetRows);
@@ -52,29 +75,6 @@ namespace ExcelReader
 			}
 
 			return returnVal;
-		}
-
-		private static List<Column> GetAllColumnDataForWorkSheet(ExcelWorksheet worksheet)
-        {
-			List<Column> allColumns = new List<Column>();
-			string workSheetName = worksheet.Name;
-			int workSheetColumns = worksheet.Dimension.Columns;
-			int workSheetRows = worksheet.Dimension.Rows;
-
-			for (int currentColumn = 1; currentColumn <= workSheetColumns; currentColumn++)
-			{
-				string colIndexToLetter = NumberToAlpha(currentColumn);
-				List<string> entireColumnData = GetAllDataOfRow(workSheetRows, currentColumn, worksheet);
-
-				Column newColumn = new Column
-				{
-					TableName = workSheetName,
-					ColumnName = colIndexToLetter,
-					ColumnData = entireColumnData,
-				};
-				allColumns.Add(newColumn);
-			}
-			return allColumns;
 		}
 	}
 }
