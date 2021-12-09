@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data.SqlClient;
 using System.Configuration;
+using System.Collections.Generic;
 
 namespace ExcelReader
 {
@@ -15,8 +16,8 @@ namespace ExcelReader
                 CreateDatabase("ExcelReader");
                 Console.WriteLine("Database Created");
             }
-            else 
-            { 
+            else
+            {
                 Console.WriteLine("Database already exists");
                 Console.WriteLine("Deleting previous database...");
                 DeleteDatabase(DatabaseName);
@@ -28,23 +29,25 @@ namespace ExcelReader
         }
         public static void CreateDatabase(string DatabaseName)
         {
-                string connectionString = ConfigurationManager.AppSettings.Get("ConnectionString");
-                SqlConnection myConn = new SqlConnection(connectionString);
+            string connectionString = ConfigurationManager.AppSettings.Get("ConnectionString");
+            SqlConnection myConn = new SqlConnection(connectionString);
 
-                string str = $"CREATE DATABASE {DatabaseName}";
-                SqlCommand myCommand = new SqlCommand(str, myConn);
+            string str = $"CREATE DATABASE {DatabaseName}";
+            SqlCommand myCommand = new SqlCommand(str, myConn);
 
-                myConn.Open();
-                myCommand.ExecuteNonQuery();
+            myConn.Open();
+            myCommand.ExecuteNonQuery();
 
-                myConn.Close();
+            myConn.Close();
         }
         public static void DeleteDatabase(string DatabaseName)
         {
             string conString = ConfigurationManager.AppSettings.Get("ConnectionString");
             var con = new SqlConnection(conString);
             con.Open();
-            string dropDBString = $"DROP DATABASE {DatabaseName}";
+            string dropDBString = $@"EXEC msdb.dbo.sp_delete_database_backuphistory @database_name = N'{DatabaseName}'
+                                    USE [master]
+                                    DROP DATABASE [{DatabaseName}]";
             SqlCommand dropDBCommand = new SqlCommand(dropDBString, con);
             dropDBCommand.ExecuteNonQuery();
             con.Close();
@@ -142,6 +145,27 @@ namespace ExcelReader
             }
             con.Close();
             return isExist;
+        }
+        public static List<Object[]> ReadAllFromTable(string tableName)
+        {
+            
+            List<Object[]> allColumnValues = new List<object[]>();
+            string command = $"SELECT * FROM {tableName}";
+
+            SqlConnection con = OpenSql();
+            SqlCommand myCommand = new SqlCommand(command, con);
+            SqlDataReader dataReader = myCommand.ExecuteReader();
+            
+            while (dataReader.Read())
+            {
+                int numberOfFields = dataReader.FieldCount;
+                Object[] columnValues = new Object[numberOfFields];
+                dataReader.GetValues(columnValues);
+                allColumnValues.Add(columnValues);
+
+            }
+            con.Close();
+            return allColumnValues;
         }
         public static SqlConnection OpenSql()
         {

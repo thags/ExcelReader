@@ -23,7 +23,6 @@ namespace ExcelReader
                 {
 					ExcelWorksheet worksheet = package.Workbook.Worksheets[currentWorksheet];
 					string workSheetName = worksheet.Name;
-					DBManager.AddTable(workSheetName);
 
 					//get the dimensions of the table
 					int workSheetColumns = worksheet.Dimension.Columns;

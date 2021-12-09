@@ -9,8 +9,9 @@ namespace ExcelReader
 {
     public class FlowControl
     {
-        public static void WriteColumnsToDB(List<Column> allColumns)
+        public static List<string> WriteColumnsToDB(List<Column> allColumns)
         {
+            List<string> allTables = new List<string>();
             string lastTableName = "";
             int iterations = 0;
             foreach (Column column in allColumns)
@@ -25,9 +26,11 @@ namespace ExcelReader
                     if (!DBManager.DoesTableExist(thisTableName))
                     {
                         DBManager.AddTable(thisTableName);
+                        allTables.Add(thisTableName);
                         Console.WriteLine($"Adding Database table {thisTableName}");
                     }
                 }
+                lastTableName = thisTableName;
 
                 //check if the column already exists or not
                 if (!DBManager.DoesColumnExist(thisTableName, thisColumnName))
@@ -55,6 +58,7 @@ namespace ExcelReader
 
                 iterations++;
             }
+            return allTables;
         }
         public static void WaitForUser()
         {
