@@ -2,6 +2,7 @@
 using System.Data.SqlClient;
 using System.Configuration;
 using System.Collections.Generic;
+using ExcelReader.Models;
 
 namespace ExcelReader
 {
@@ -146,10 +147,11 @@ namespace ExcelReader
             con.Close();
             return isExist;
         }
-        public static List<Object[]> ReadAllFromTable(string tableName)
+        public static List<RowView> ReadAllRowsFromTable(string tableName)
         {
-            
-            List<Object[]> allColumnValues = new List<object[]>();
+            List<RowView> allColumnsData = new List<RowView>();
+            int iteration = 0;
+            //List<Object[]> allColumnValues = new List<object[]>();
             string command = $"SELECT * FROM {tableName}";
 
             SqlConnection con = OpenSql();
@@ -159,13 +161,30 @@ namespace ExcelReader
             while (dataReader.Read())
             {
                 int numberOfFields = dataReader.FieldCount;
-                Object[] columnValues = new Object[numberOfFields];
-                dataReader.GetValues(columnValues);
-                allColumnValues.Add(columnValues);
+                //Object[] columnValues = new Object[numberOfFields];
+                //dataReader.GetValues(columnValues);
+                //allColumnValues.Add(columnValues);
+
+                List<string> currentColumnData = new List<string>(numberOfFields);
+                for(int i = 0; i < numberOfFields; i++)
+                {
+                    currentColumnData.Add(dataReader[i].ToString());
+                }
+                string columnName = "";
+                if (iteration > 0)
+                {
+                    columnName = ExcelController.NumberToAlpha(Int32.Parse(currentColumnData[0])-1);
+                }
+                RowView currentColumn = new RowView
+                {
+                    ColumnName = columnName,
+                    RowData = currentColumnData,
+                };
+                allColumnsData.Add(currentColumn);
 
             }
             con.Close();
-            return allColumnValues;
+            return allColumnsData;
         }
         public static SqlConnection OpenSql()
         {

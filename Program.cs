@@ -15,7 +15,7 @@ namespace ExcelReader
             List<string> allTables = FlowControl.WriteColumnsToDB(ExcelController.Run());
             foreach(string tableName in allTables)
             {
-                List<Object[]> columnValues = DBManager.ReadAllFromTable(tableName);
+                var rowValues = DBManager.ReadAllRowsFromTable(tableName);
                 
             }
             FlowControl.WaitForUser();

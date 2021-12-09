@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace ExcelReader.Models
 {
-    public class ColumnView
+    public class RowView
     {
         public string ColumnName { get; set; }
-        public List<string> ColumnData {get; set;}
+        public List<string> RowData {get; set;}
     }
 }
